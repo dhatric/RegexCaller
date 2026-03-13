@@ -67,7 +67,10 @@ fun AddRuleScreen(
         },
         bottomBar = {
             Surface(tonalElevation = 4.dp, shadowElevation = 8.dp) {
-                Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(16.dp)) {
                     Button(
                         onClick = {
                             val finalLabel = if (label.isBlank()) pattern else label
