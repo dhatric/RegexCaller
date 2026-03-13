@@ -81,7 +81,9 @@ fun AddRuleScreen(
                                 isRegex = isRegex,
                                 action = action,
                                 isEnabled = existingRule?.isEnabled ?: true,
-                                matchCount = existingRule?.matchCount ?: 0
+                                matchCount = existingRule?.matchCount ?: 0,
+                                createdAt = existingRule?.createdAt ?: System.currentTimeMillis(),
+                                updatedAt = System.currentTimeMillis()
                             )
                             
                             if (editRuleId == null) {

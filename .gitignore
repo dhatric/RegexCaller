@@ -14,3 +14,7 @@
 .cxx
 local.properties
 
+
+# Build files
+*.jks
+*.keystore

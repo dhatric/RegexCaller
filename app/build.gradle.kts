@@ -66,10 +66,12 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../regexcaller-release.jks")
-            storePassword = "regex123"
-            keyAlias = "regexcaller"
-            keyPassword = "regex123"
+            // Use environment variables or gradle.properties for secrets instead of hardcoding
+            val keystoreFile = project.findProperty("RELEASE_STORE_FILE") as String? ?: System.getenv("RELEASE_STORE_FILE")
+            storeFile = keystoreFile?.let { file(it) }
+            storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as String? ?: System.getenv("RELEASE_STORE_PASSWORD")
+            keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as String? ?: System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as String? ?: System.getenv("RELEASE_KEY_PASSWORD")
         }
     }
 
@@ -94,7 +96,10 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        // compiler extension version removed to fix lint crash
+    }
+    lint {
+        disable.add("AutoboxingStateCreation")
     }
 }
 

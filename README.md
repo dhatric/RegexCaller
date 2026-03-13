@@ -15,7 +15,7 @@ This project was built from scratch utilizing strict **Test-Driven Development (
 - **Regex Blocking:** Formulate explicit expressions (e.g. `^\+91.*00$`) for granular filtering.
 - **Rule Priorities:** Apply `BLOCK`, `SILENCE`, or `ALLOW` actions. Allow rules are strictly evaluated first allowing you to easily whitelist priority numbers against broad blocking sweeps.
 - **Safe Evaluation:** Built-in Test tool lets you pass raw numbers through your database to determine what Rule catches it.
-- **Privacy First Approach:** Requires zero location, analytics, or Internet permissions. Local Room Database. 
+- **Privacy First Approach:** Requires zero location, analytics, or Internet permissions. Local Room Database. System cloud backups are strictly disabled so your rules never leave the device. 
 
 ## Technical Architecture
 - **Language:** Kotlin
@@ -50,7 +50,13 @@ To run the full suite of Instrumented Android tests (evaluating SQLite SQL migra
 
 ### 2. Building for Production
 
-Compile a signed, Proguard-minified release APK to test natively on your Android Device:
+Compile a signed, Proguard-minified release APK to test natively on your Android Device. 
+
+**Note:** You must provide your own signing keystore via environment variables or `gradle.properties`:
+- `RELEASE_STORE_FILE`
+- `RELEASE_STORE_PASSWORD`
+- `RELEASE_KEY_ALIAS`
+- `RELEASE_KEY_PASSWORD`
 
 ```bash
 # Generate the Minified Release Build

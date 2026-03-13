@@ -20,7 +20,7 @@ import com.regexcaller.callblocker.util.hasCallScreeningRole
 @Composable
 fun OnboardingScreen(navController: NavController) {
     val context = LocalContext.current
-    val activity = context as Activity
+    val activity = context as? Activity
 
     var roleGranted by remember {
         mutableStateOf(
@@ -92,7 +92,7 @@ fun OnboardingScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && activity != null) {
                             val roleManager = activity.getSystemService(
                                 android.app.role.RoleManager::class.java
                             )
