@@ -1,9 +1,11 @@
 package com.regexcaller.callblocker.ui.screens
 
 import android.app.Activity
+import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -13,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
 import androidx.navigation.NavController
 import com.regexcaller.callblocker.util.hasCallScreeningRole
 
@@ -30,12 +34,27 @@ fun OnboardingScreen(navController: NavController) {
         )
     }
 
+    var contactsGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
     val roleLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             roleGranted = hasCallScreeningRole(context)
         }
+    }
+
+    val contactsPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        contactsGranted = granted
     }
 
     Scaffold(
@@ -132,6 +151,33 @@ fun OnboardingScreen(navController: NavController) {
                     "Everything is set up! Your call screening is active.",
                     style = MaterialTheme.typography.bodyLarge
                 )
+
+                if (!contactsGranted) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                "Optional but recommended: Allow Contacts permission",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text("Without this, Android may skip screening for calls from saved contacts.")
+                            Spacer(Modifier.height(8.dp))
+                            Button(
+                                onClick = {
+                                    contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Grant Contacts Permission")
+                            }
+                        }
+                    }
+                }
 
                 Button(
                     onClick = { navController.navigate("home") {

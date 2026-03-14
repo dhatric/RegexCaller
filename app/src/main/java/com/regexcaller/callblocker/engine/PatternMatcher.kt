@@ -66,10 +66,11 @@ object PatternMatcher {
      * Matches using wildcard semantics (exact, whole number match bounded by pattern).
      */
     fun matchWildcard(number: String, pattern: String): Boolean {
-        if (pattern.isBlank()) return false
-        val regex = buildWildcardRegex(pattern)
+        val cleanPattern = pattern.trim()
+        if (cleanPattern.isBlank()) return false
+        val regex = buildWildcardRegex(cleanPattern)
         return try {
-            Regex(regex).matches(number)
+            Regex(regex).matches(number.trim())
         } catch (e: Exception) {
             false
         }
@@ -79,9 +80,10 @@ object PatternMatcher {
      * Matches raw regex. Allows un-anchored substrings depending on user input regex.
      */
     fun matchRegex(number: String, pattern: String): Boolean {
-        if (pattern.isBlank()) return false
+        val cleanPattern = pattern.trim()
+        if (cleanPattern.isBlank()) return false
         return try {
-            Regex(pattern).containsMatchIn(number)
+            Regex(cleanPattern).containsMatchIn(number.trim())
         } catch (e: Exception) {
             false
         }
@@ -111,7 +113,7 @@ object PatternMatcher {
      * Yields ALLOW rules first, then preserving list order (which defaults to created DESC).
      */
     fun findMatchingRule(incomingRaw: String, rules: List<BlockRule>): BlockRule? {
-        val sorted = rules.sortedByDescending { it.action == BlockAction.ALLOW }
+        val sorted = rules.sortedByDescending { it.action.trim().equals(BlockAction.ALLOW, ignoreCase = true) }
         return sorted.firstOrNull { matches(incomingRaw, it) }
     }
 
