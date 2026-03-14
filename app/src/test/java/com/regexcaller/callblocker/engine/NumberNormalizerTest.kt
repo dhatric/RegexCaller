@@ -42,19 +42,24 @@ class NumberNormalizerTest {
     }
 
     @Test
-    fun `allVariants returns both normalized and original strings`() {
+    fun `allVariants returns multiple combinations including 10-digit suffix`() {
         val variants = NumberNormalizer.allVariants("+91 98765-00000")
         assertTrue(variants.contains("+919876500000"))      // normalized
         assertTrue(variants.contains("+91 98765-00000"))    // original
-        assertEquals(2, variants.size)
+        assertTrue(variants.contains("919876500000"))       // digits only
+        assertTrue(variants.contains("9876500000"))         // 10-digit fallback
+        assertEquals(4, variants.size)
     }
 
     @Test
     fun `allVariants deduplicates results`() {
         val variants = NumberNormalizer.allVariants("9876500000")
-        // "9876500000" appears as both normalized and original -> should be deduped
+        // "9876500000" appears as both normalized, original, digits, and 10-digit
+        // But the + prefixed one is also added
         assertEquals(variants.size, variants.distinct().size)
-        assertEquals(1, variants.size)
+        assertTrue(variants.contains("+9876500000"))
+        assertTrue(variants.contains("9876500000"))
+        assertEquals(2, variants.size)
     }
 
     @Test
