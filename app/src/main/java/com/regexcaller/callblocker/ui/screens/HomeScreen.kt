@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -57,7 +56,6 @@ import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 
 private data class HomeActionUiModel(
     val label: String,
-    val containerColor: Color,
     val contentColor: Color
 )
 
@@ -264,24 +262,44 @@ internal fun RuleCard(
     onDelete: () -> Unit
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = "Name: ${rule.label.ifBlank { "Unnamed Rule" }}",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
+                    overflow = TextOverflow.Ellipsis
                 )
+                Text(
+                    text = buildString {
+                        append("Pattern: ")
+                        append(rule.pattern)
+                        if (rule.isRegex) {
+                            append(" (Regex)")
+                        }
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                ActionBadge(action = rule.action)
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(999.dp))
@@ -307,27 +325,10 @@ internal fun RuleCard(
                 }
             }
 
-            Text(
-                text = buildString {
-                    append("Pattern: ")
-                    append(rule.pattern)
-                    if (rule.isRegex) {
-                        append(" (Regex)")
-                    }
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                ActionBadge(action = rule.action)
-                Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -352,18 +353,11 @@ private fun ActionBadge(
     action: String
 ) {
     val actionUi = actionUiFor(action)
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(999.dp))
-            .background(actionUi.containerColor)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
-    ) {
-        Text(
-            text = actionUi.label,
-            style = MaterialTheme.typography.labelMedium,
-            color = actionUi.contentColor
-        )
-    }
+    Text(
+        text = actionUi.label,
+        style = MaterialTheme.typography.labelMedium,
+        color = actionUi.contentColor
+    )
 }
 
 @Composable
@@ -371,19 +365,16 @@ private fun actionUiFor(action: String): HomeActionUiModel =
     when (action) {
         BlockAction.BLOCK -> HomeActionUiModel(
             label = "Block",
-            containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.error
         )
 
         BlockAction.SILENCE -> HomeActionUiModel(
             label = "Silence",
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         else -> HomeActionUiModel(
             label = "Allow",
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor = MaterialTheme.colorScheme.primary
         )
     }
