@@ -43,9 +43,9 @@ class AddRuleScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Block call").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Silence call").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Always allow").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Block").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Silence").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Allow").assertIsDisplayed()
     }
 
     @Test

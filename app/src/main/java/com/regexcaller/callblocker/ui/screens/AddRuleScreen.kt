@@ -71,17 +71,17 @@ private data class ActionUiModel(
 private val actionUiModels = listOf(
     ActionUiModel(
         action = BlockAction.BLOCK,
-        label = "Block call",
+        label = "Block",
         description = "Reject matching calls before they ring."
     ),
     ActionUiModel(
         action = BlockAction.SILENCE,
-        label = "Silence call",
+        label = "Silence",
         description = "Let matching calls arrive silently."
     ),
     ActionUiModel(
         action = BlockAction.ALLOW,
-        label = "Always allow",
+        label = "Allow",
         description = "Never block matching calls."
     )
 )
@@ -222,12 +222,12 @@ fun AddRuleScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SectionCard(
-                title = "Rule Type",
-                subtitle = "Choose the easiest matching mode for this rule."
+                title = "Rule",
+                subtitle = null
             ) {
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                     listOf(RuleMode.SIMPLE, RuleMode.REGEX).forEachIndexed { index, ruleMode ->
@@ -241,7 +241,7 @@ fun AddRuleScreen(
                             label = {
                                 Text(
                                     if (ruleMode == RuleMode.SIMPLE) {
-                                        "Simple Pattern"
+                                        "Simple"
                                     } else {
                                         "Regex"
                                     }
@@ -250,32 +250,21 @@ fun AddRuleScreen(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = if (isRegex) {
-                        "Advanced mode for custom regex expressions."
-                    } else {
-                        "Recommended for most users. Use numbers, * and ?."
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ActionSection(
+                    selectedAction = action,
+                    onActionSelected = { action = it }
                 )
-            }
-
-            SectionCard(
-                title = "Pattern",
-                subtitle = "Create the number pattern this rule should match."
-            ) {
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
-                    label = { Text("Rule name (optional)") },
+                    label = { Text("Name (optional)") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words
                     ),
                     supportingText = {
-                        Text("If left blank, we’ll use the pattern as the rule name.")
+                        Text("Blank uses the pattern.")
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -283,7 +272,7 @@ fun AddRuleScreen(
                     value = pattern,
                     onValueChange = { pattern = it },
                     label = {
-                        Text(if (isRegex) "Regex pattern" else "Phone number or pattern")
+                        Text(if (isRegex) "Regex pattern" else "Number or pattern")
                     },
                     modifier = Modifier.fillMaxWidth(),
                     isError = patternError != null,
@@ -303,46 +292,34 @@ fun AddRuleScreen(
                             }
 
                             isRegex -> {
-                                Text("Regex example: $regexExample")
-                            }
-
-                            else -> {
-                                Text("Examples: 98765*, *1234, 9876?00000, or an exact number.")
+                                Text(regexExample)
                             }
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 ExampleChips(
                     isRegex = isRegex,
                     onExampleSelected = { pattern = it }
                 )
             }
 
-            SectionCard(
-                title = "Action",
-                subtitle = "Choose what RingBlock should do when a call matches."
-            ) {
-                ActionSection(
-                    selectedAction = action,
-                    onActionSelected = { action = it }
-                )
+            if (pattern.isNotBlank() || patternError != null) {
+                SectionCard(
+                    title = "Preview",
+                    subtitle = null
+                ) {
+                    PreviewSection(
+                        pattern = pattern,
+                        patternError = patternError,
+                        previewText = previewText,
+                        isRegex = isRegex,
+                        actionDescription = selectedAction.description
+                    )
+                }
             }
 
-            SectionCard(
-                title = "Preview",
-                subtitle = "Review how this rule will behave before saving."
-            ) {
-                PreviewSection(
-                    pattern = pattern,
-                    patternError = patternError,
-                    previewText = previewText,
-                    isRegex = isRegex,
-                    actionDescription = selectedAction.description
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -350,22 +327,24 @@ fun AddRuleScreen(
 @Composable
 internal fun SectionCard(
     title: String,
-    subtitle: String,
+    subtitle: String?,
     content: @Composable () -> Unit
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(title, style = MaterialTheme.typography.titleMedium)
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (!subtitle.isNullOrBlank()) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             HorizontalDivider()
             content()
         }
@@ -411,7 +390,6 @@ internal fun ActionSection(
             )
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
     Text(
         text = actionUiModels.first { it.action == selectedAction }.description,
         style = MaterialTheme.typography.bodyMedium,
@@ -428,14 +406,6 @@ internal fun PreviewSection(
     actionDescription: String
 ) {
     when {
-        pattern.isBlank() -> {
-            Text(
-                text = "Start by entering a phone number, pattern, or regex to preview this rule.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
         patternError != null -> {
             Text(
                 text = patternError,
@@ -449,13 +419,8 @@ internal fun PreviewSection(
                 text = previewText ?: "",
                 style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = if (isRegex) {
-                    "Regex mode is best for advanced matching. Double-check your expression before saving."
-                } else {
-                    actionDescription
-                },
+                text = actionDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -474,8 +439,8 @@ private fun buildPreviewText(
         "This advanced rule will $actionLabel when the regex matches an incoming number."
     } else {
         val actionText = when (actionLabel) {
-            "Block call" -> "block"
-            "Silence call" -> "silence"
+            "Block" -> "block"
+            "Silence" -> "silence"
             else -> "always allow"
         }
         "This rule will $actionText calls that ${PatternMatcher.getPatternDescription(pattern).removePrefix("Matches ").replaceFirstChar { it.lowercase() }}."
