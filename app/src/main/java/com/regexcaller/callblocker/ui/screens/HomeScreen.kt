@@ -40,7 +40,7 @@ fun HomeScreen(
                     IconButton(onClick = { navController.navigate("test") }) {
                         Icon(imageVector = Icons.Default.Phone, contentDescription = "Test Number")
                     }
-                    IconButton(onClick = { navController.navigate("onboarding") }) {
+                    IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
                     }
                 }
