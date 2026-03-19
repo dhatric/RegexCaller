@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">RegexCaller</string>
+    <string name="app_name">RingBlock</string>
+    <string name="app_short_description">Block spam calls using custom number patterns and smart filtering rules.</string>
     <string name="no_rules_title">No rules yet</string>
     <string name="no_rules_subtitle">Tap + to add a pattern like 98765* to block all matching numbers</string>
     <string name="add_rule">Add Rule</string>
@@ -10,5 +11,5 @@
     <string name="grant_permission">Grant Call Screening Permission</string>
     <string name="screening_active">Call screening is active. Your phone app is unchanged.</string>
     <string name="screening_not_granted">Call screening permission not granted yet.</string>
-    <string name="samsung_note">This app works as a silent background filter. Your Samsung Phone app will NOT be replaced.</string>
+    <string name="samsung_note">This app works as a silent background filter. Your Phone app will NOT be replaced.</string>
 </resources>

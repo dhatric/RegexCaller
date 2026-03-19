@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.regexcaller.callblocker.data.db.BlockRule
 import com.regexcaller.callblocker.data.model.BlockAction
+import com.regexcaller.callblocker.R
 import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,11 +36,8 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("RegexCaller") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
-                    IconButton(onClick = { navController.navigate("test") }) {
-                        Icon(imageVector = Icons.Default.Phone, contentDescription = "Test Number")
-                    }
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
                     }

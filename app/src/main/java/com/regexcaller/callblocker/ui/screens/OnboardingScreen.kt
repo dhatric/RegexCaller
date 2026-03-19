@@ -105,7 +105,7 @@ fun OnboardingScreen(navController: NavController) {
                     )
                     Text(
                         if (roleGranted)
-                            "Call screening is active. Samsung Phone is unchanged."
+                            "Call screening is active."
                         else
                             "Call screening permission not granted yet."
                     )
@@ -114,8 +114,8 @@ fun OnboardingScreen(navController: NavController) {
 
             if (!roleGranted) {
                 Text(
-                    "RegexCaller works as a silent background filter. " +
-                    "Your Samsung Phone app will NOT be replaced.",
+                    "RingBlock works as a silent background filter. " +
+                    "Your Phone app will NOT be replaced.",
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -155,10 +155,10 @@ fun OnboardingScreen(navController: NavController) {
                             style = MaterialTheme.typography.titleSmall
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text("• Samsung Phone stays as your default dialer")
-                        Text("• RegexCaller silently checks each call")
+                        Text("• Current Phone stays as your default dialer")
+                        Text("• RingBlock silently checks each call")
                         Text("• Matched calls are blocked before they ring")
-                        Text("• Unmatched calls ring normally through Samsung Phone")
+                        Text("• Unmatched calls ring normally through Phone")
                         Text("• You can revoke this anytime in Android Settings")
                     }
                 }
