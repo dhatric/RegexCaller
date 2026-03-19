@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,7 @@ import com.regexcaller.callblocker.util.hasCallScreeningRole
 fun OnboardingScreen(navController: NavController) {
     val context = LocalContext.current
     val activity = context as? Activity
+    val canNavigateBack = navController.previousBackStackEntry != null
 
     var roleGranted by remember {
         mutableStateOf(
@@ -58,7 +60,21 @@ fun OnboardingScreen(navController: NavController) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Enable Call Blocking") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Enable Call Blocking") },
+                navigationIcon = {
+                    if (canNavigateBack) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
