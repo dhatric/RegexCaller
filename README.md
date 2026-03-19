@@ -16,7 +16,7 @@ This project is built with Kotlin, Jetpack Compose, and a test-first workflow, w
 - **Rule Actions:** Apply `BLOCK`, `SILENCE`, or `ALLOW`. Allow rules are evaluated first so you can safely whitelist important numbers.
 - **Rule Import / Export:** Back up your rules to JSON and restore them later from the Settings screen.
 - **Built-in Rule Matcher:** Test a number against your saved rules from Settings to see which rule would apply.
-- **Privacy First:** No analytics, no Internet permission, and local-only rule storage through Room. Android cloud backup is disabled so rules stay on-device.
+- **Privacy First:** No analytics, no Internet permission, and local-only rule storage through Room. The app excludes its rules database from Android backup and device-transfer flows so your rule set stays on-device unless you explicitly export it.
 
 ## Technical Architecture
 - **Language:** Kotlin
@@ -55,7 +55,7 @@ To compile or run Android instrumented tests, attach a device or emulator:
 
 ### 2. Building for Production
 
-Compile a signed, Proguard-minified release APK:
+Compile a signed, Proguard-minified release APK or Play-ready app bundle:
 
 **Note:** You must provide your own signing keystore via environment variables or `gradle.properties`:
 - `RELEASE_STORE_FILE`
@@ -64,9 +64,14 @@ Compile a signed, Proguard-minified release APK:
 - `RELEASE_KEY_PASSWORD`
 
 ```bash
-# Generate the minified release build
+# Generate the minified release APK
 ./gradlew assembleRelease
+
+# Generate the signed Android App Bundle for Play submission
+./gradlew bundleRelease
 ```
+
+Privacy policy: [https://dhatric.github.io/RegexCaller/privacy-policy/](https://dhatric.github.io/RegexCaller/privacy-policy/)
 
 ### 3. Installing via ADB
 

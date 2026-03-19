@@ -127,21 +127,22 @@ class CallBlockerService : CallScreeningService() {
 
 ### Exact Additions Required
 
-1.  **Add permissions** (inside `<manifest>`, before `<application>`):
+1.  **Add only the permissions the current app actually needs** (inside `<manifest>`, before `<application>`):
 
 ```xml
-<uses-permission android:name="android.permission.READ_CALL_LOG" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+<uses-permission android:name="android.permission.READ_CONTACTS" />
 ```
 
-> **No INTERNET permission.** This is intentional — the app never communicates over the network. Do not add `android.permission.INTERNET` for any reason, including analytics or crash reporting.
+> `CallScreeningService` interception on Android 10+ is driven by the service declaration plus the `ROLE_CALL_SCREENING` role grant. The current app does not need `READ_PHONE_STATE`, `READ_CALL_LOG`, or `ANSWER_PHONE_CALLS` for this flow. `READ_CONTACTS` remains optional support for contact-aware screening behavior. Also keep **no INTERNET permission** — the app never communicates over the network.
 
 2.  **Register the Application class** (add `android:name` to `<application>`):
 
 ```xml
 <application
     android:name=".CallBlockerApp"
+    android:allowBackup="false"
+    android:dataExtractionRules="@xml/data_extraction_rules"
+    android:fullBackupContent="@xml/backup_rules"
     ... >
 ```
 
@@ -165,7 +166,8 @@ class CallBlockerService : CallScreeningService() {
 - `android:exported="true"` is REQUIRED — the system must be able to bind to this service
 - `android:permission="android.permission.BIND_SCREENING_SERVICE"` ensures ONLY the system can bind
 - The intent-filter action MUST be exactly `android.telecom.CallScreeningService`
-- This does NOT make the app the default dialer — it only registers as a call screener
+- This does NOT make the app the default dialer — it only registers as a call screener through `ROLE_CALL_SCREENING`
+- The app can intercept calls without replacing Samsung Phone because Android Telecom invokes the screening service before the call is presented to the dialer UI
 
 **Verification:** Project compiles. No manifest merge errors.
 

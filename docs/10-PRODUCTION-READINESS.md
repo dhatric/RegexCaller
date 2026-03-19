@@ -122,11 +122,11 @@ android {
 
 ### Why Required
 
-The app uses `READ_CALL_LOG` permission. Google Play requires:
+For Google Play submission, publish:
 
 1.  A privacy policy URL
-2.  Data Safety section declaration
-3.  Manual review justification
+2.  An in-app privacy policy entry point
+3.  Data Safety declarations that match the shipped manifest and behavior
 
 ### Privacy Policy Content (Template)
 
@@ -138,9 +138,9 @@ Privacy Policy for RegexCaller
 Last updated: [date]
 
 1. DATA COLLECTED
-RegexCaller accesses call log data solely to count how many calls matched
-each blocking rule you've created. This count is stored locally on your
-device in the app's private database.
+RingBlock screens incoming calls locally using Android's call screening role.
+Your blocking rules and match counts are stored locally on your device in the
+app's private database.
 
 2. DATA NOT COLLECTED OR SHARED
 - We do NOT collect phone numbers
@@ -150,10 +150,8 @@ device in the app's private database.
 - We do NOT store incoming call numbers
 
 3. PERMISSIONS USED
-- READ_CALL_LOG: Used to display match counts for user-created rules
-- READ_PHONE_STATE: Required for CallScreeningService
-- ANSWER_PHONE_CALLS: Required for call screening role
-- ROLE_CALL_SCREENING: To screen incoming calls against user-defined patterns
+- READ_CONTACTS: Used to support contact-aware call screening behavior
+- ROLE_CALL_SCREENING: Used to screen incoming calls against user-defined patterns
 
 4. DATA STORAGE
 All data (blocking rules, match counts) is stored locally on your device
@@ -174,7 +172,7 @@ Uninstalling the app deletes all stored data immediately.
 
 ### Implementation Step
 
-Create a `PrivacyPolicyActivity` or link to a web URL from the app's Settings/About section.
+Add a Settings/About entry that opens the published privacy policy URL.
 
 ---
 
@@ -251,7 +249,7 @@ In Google Play Console → App Content → Data Safety:
 | Data Type | Collected? | Shared? | Purpose |
 | --- | --- | --- | --- |
 | Phone numbers | No  | No  | —   |
-| Call logs | Yes | No  | App functionality (match counts) |
+| Contacts | No  | No  | Optional on-device screening context |
 | App interactions | No  | No  | —   |
 | Device info | No  | No  | —   |
 
@@ -260,18 +258,9 @@ In Google Play Console → App Content → Data Safety:
 In Play Console → App Content → Permissions:
 
 ```
-Permission: READ_CALL_LOG
-Core feature: The app reads call log metadata solely to display match 
-counts for user-created blocking rules. No call data is transmitted 
-off-device or stored beyond aggregate match counts.
-
-Permission: READ_PHONE_STATE  
-Core feature: Required for the CallScreeningService to receive incoming 
-call details and determine whether to block based on user-defined patterns.
-
-Permission: ANSWER_PHONE_CALLS
-Core feature: Required for the ROLE_CALL_SCREENING system role that 
-enables call screening without replacing the user's default phone app.
+Permission: READ_CONTACTS
+Core feature: Supports contact-aware call screening behavior on device.
+No contact data is transmitted off-device.
 ```
 
 ---
@@ -317,6 +306,7 @@ Execute the complete test script from Phase 9, Step 9.7.
 | 1   | All unit tests pass (`./gradlew test`) | \[ \] |
 | 2   | All instrumented tests pass (`connectedAndroidTest`) | \[ \] |
 | 3   | Release APK builds with R8 (`assembleRelease`) | \[ \] |
+| 3a  | Play app bundle builds successfully (`bundleRelease`) | \[ \] |
 | 4   | Release APK tested on Samsung S23 | \[ \] |
 | 5   | Samsung Phone still default dialer after install | \[ \] |
 | 6   | Call blocking works on release build | \[ \] |
@@ -334,7 +324,7 @@ Execute the complete test script from Phase 9, Step 9.7.
 | #   | Item | Status |
 | --- | --- | --- |
 | 1   | App content declarations filled (Data Safety) | \[ \] |
-| 2   | READ_CALL_LOG justification provided | \[ \] |
+| 2   | Sensitive permission disclosures match shipped manifest | \[ \] |
 | 3   | Content rating questionnaire completed | \[ \] |
 | 4   | Target audience set (general) | \[ \] |
 | 5   | Privacy policy URL entered in Play Console | \[ \] |

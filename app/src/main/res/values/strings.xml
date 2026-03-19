@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">RingBlock</string>
     <string name="app_short_description">Block spam calls using custom number patterns and smart filtering rules.</string>
+    <string name="privacy_policy_url">https://dhatric.github.io/RegexCaller/privacy-policy/</string>
+    <string name="open_privacy_policy">Open Privacy Policy</string>
     <string name="no_rules_title">No rules yet</string>
     <string name="no_rules_subtitle">Tap + to add a pattern like 98765* to block all matching numbers</string>
     <string name="add_rule">Add Rule</string>

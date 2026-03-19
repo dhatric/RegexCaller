@@ -1,5 +1,7 @@
 package com.regexcaller.callblocker.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.rememberScrollState
@@ -43,9 +45,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.regexcaller.callblocker.R
 import com.regexcaller.callblocker.data.transfer.RuleImportStats
 import com.regexcaller.callblocker.ui.theme.ringBlockPrimaryButtonColors
 import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
@@ -59,6 +64,8 @@ fun SettingsScreen(
     navController: NavController,
     viewModel: BlockRuleViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val privacyPolicyUrl = stringResource(R.string.privacy_policy_url)
     val uiState by viewModel.transferUiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val exportLauncher = rememberLauncherForActivityResult(
@@ -106,6 +113,12 @@ fun SettingsScreen(
         },
         onOpenRuleTesterClick = {
             navController.navigate("test")
+        },
+        onOpenPrivacyPolicyClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicyUrl)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
         }
     )
 }
@@ -119,7 +132,8 @@ fun SettingsScreenContent(
     onExportClick: () -> Unit,
     onImportClick: () -> Unit,
     onOpenPermissionsClick: () -> Unit,
-    onOpenRuleTesterClick: () -> Unit
+    onOpenRuleTesterClick: () -> Unit,
+    onOpenPrivacyPolicyClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -194,7 +208,19 @@ fun SettingsScreenContent(
                 }
             }
 
-
+            SettingsSectionCard(
+                title = "Privacy",
+                details = "Read the public privacy policy used for Play Console and in-app disclosure."
+            ) {
+                Button(
+                    onClick = onOpenPrivacyPolicyClick,
+                    enabled = !isBusy,
+                    colors = ringBlockPrimaryButtonColors(),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.open_privacy_policy))
+                }
+            }
 
             if (isBusy) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
