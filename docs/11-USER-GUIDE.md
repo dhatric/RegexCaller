@@ -1,16 +1,16 @@
 # 11-USER-GUIDE
 
-# RegexCaller — User Guide
+# RingBlock — User Guide
 
-## What Is RegexCaller?
+## What Is RingBlock?
 
-RegexCaller is a call blocker that runs silently in the background on your Samsung Galaxy S23. It blocks or silences incoming calls that match patterns you define — like blocking all numbers starting with `98765`.
+RingBlock is a call blocker that runs silently in the background on your Samsung Galaxy S23. It blocks or silences incoming calls that match patterns you define — like blocking all numbers starting with `98765`.
 
 **Key points:**
 
-- Your Samsung Phone app stays unchanged — RegexCaller works alongside it, not as a replacement
+- Your Samsung Phone app stays unchanged — RingBlock works alongside it, not as a replacement
 - No internet access — all data stays on your phone
-- No battery drain — the app only activates for a split second when a call comes in
+- Your rules database is excluded from Android backup and device transfer unless you explicitly export it
 
 ---
 
@@ -18,36 +18,31 @@ RegexCaller is a call blocker that runs silently in the background on your Samsu
 
 ### Step 1: Open the App
 
-After installing (via Android Studio or sideloading the APK), tap the **RegexCaller** icon to launch.
+After installing (via Android Studio or sideloading the APK), tap the **RingBlock** icon to launch.
 
 ### Step 2: Grant Call Screening Permission
 
 On first launch, you'll see the **Onboarding Screen**:
 
 1.  Tap **"Grant Call Screening Permission"**
-2.  A system dialog appears: **"Allow RegexCaller to screen your calls?"**
+2.  A system dialog appears: **"Allow RingBlock to screen your calls?"**
 3.  Tap **Allow**
 
 > This does NOT change your default phone app. Samsung Phone stays as your dialer.
 
-### Step 3: Battery Optimization (Samsung-Specific)
+### Step 3: Add Your First Rule
 
-After granting the call screening role, the app may show a second prompt:
+RingBlock opens into the main app flow after the screening role is granted. Add your first rule from the Home screen or review permissions again later from Settings.
 
-1.  Tap **"Exclude from Battery Optimization"**
-2.  Tap **Allow** on the system dialog
-
-This prevents Samsung from putting the app to sleep and disabling call blocking.
-
-### Step 4: Add to "Never Sleeping Apps" (Recommended)
+### Step 4: Samsung Reliability Tips (Optional)
 
 For best reliability on Samsung:
 
 1.  Open **Settings → Battery → Background usage limits**
-2.  Tap **"Never sleeping apps"**
-3.  Tap **+** and add **RegexCaller**
+2.  Review **Sleeping apps** / **Deep sleeping apps**
+3.  If Samsung has added RingBlock to either list, remove it or add RingBlock to **Never sleeping apps**
 
-This step is optional but recommended — it ensures Samsung's aggressive battery saver doesn't interfere with call screening.
+This step is optional. RingBlock does not currently present a battery-optimization exemption prompt in the app.
 
 ### Step 5: Done!
 
@@ -117,6 +112,14 @@ The Home Screen shows all your rules in a list. Each rule displays:
 - **Pattern** — the matching pattern
 - **Match count** — how many calls this rule has blocked
 - **On/Off switch** — enable or disable without deleting
+
+---
+
+## Privacy Policy
+
+RingBlock exposes its public privacy policy from the Settings screen. You can also open it directly here:
+
+`https://dhatric.github.io/RegexCaller/privacy-policy/`
 
 ### Edit a Rule
 
@@ -302,4 +305,4 @@ Private and unknown numbers (where the caller ID is hidden) are always **allowed
 
 ### Does the app show notifications when a call is blocked?
 
-**No.** RegexCaller operates as a completely silent filter. You can check the **match count** on each rule in the Home Screen to see how many calls were caught. Blocked calls may still appear in your Samsung Phone call log (depending on your Samsung Phone settings).
+**No.** RingBlock operates as a completely silent filter. You can check the **match count** on each rule in the Home Screen to see how many calls were caught. Blocked calls may still appear in your Samsung Phone call log (depending on your Samsung Phone settings).

@@ -1,0 +1,111 @@
+:root {
+    color-scheme: light;
+    --bg: #f4efe5;
+    --ink: #1f1a17;
+    --muted: #6f665d;
+    --card: rgba(255, 252, 247, 0.92);
+    --line: rgba(31, 26, 23, 0.12);
+    --accent: #1f6f5f;
+    --accent-strong: #145245;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Georgia", "Times New Roman", serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top, rgba(31, 111, 95, 0.18), transparent 34%),
+        linear-gradient(180deg, #f8f3ea 0%, var(--bg) 100%);
+}
+
+.page {
+    width: min(760px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 48px 0 72px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 16px 48px rgba(31, 26, 23, 0.08);
+}
+
+.hero {
+    text-align: center;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.8rem;
+    color: var(--accent-strong);
+}
+
+.subhead {
+    color: var(--muted);
+}
+
+h1,
+h2 {
+    line-height: 1.15;
+}
+
+h1 {
+    margin: 0 0 12px;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+}
+
+h2 {
+    margin-top: 28px;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+}
+
+p,
+li {
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+a {
+    color: var(--accent-strong);
+}
+
+.button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+}
+
+code {
+    font-family: "SFMono-Regular", "Menlo", monospace;
+    font-size: 0.95em;
+}
+
+@media (max-width: 640px) {
+    .page {
+        width: min(100% - 20px, 760px);
+        padding-top: 24px;
+        padding-bottom: 40px;
+    }
+
+    .card {
+        padding: 22px;
+        border-radius: 18px;
+    }
+}

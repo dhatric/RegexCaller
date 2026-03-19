@@ -24,7 +24,8 @@ class SettingsScreenTest {
                 onExportClick = {},
                 onImportClick = {},
                 onOpenPermissionsClick = {},
-                onOpenRuleTesterClick = {}
+                onOpenRuleTesterClick = {},
+                onOpenPrivacyPolicyClick = {}
             )
         }
 
@@ -32,6 +33,7 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText("Import Rules").assertIsDisplayed()
         composeTestRule.onNodeWithText("Open Permissions Setup").assertIsDisplayed()
         composeTestRule.onNodeWithText("Open Rule Matcher").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Open Privacy Policy").assertIsDisplayed()
     }
 
     @Test
@@ -44,7 +46,8 @@ class SettingsScreenTest {
                 onExportClick = {},
                 onImportClick = {},
                 onOpenPermissionsClick = {},
-                onOpenRuleTesterClick = {}
+                onOpenRuleTesterClick = {},
+                onOpenPrivacyPolicyClick = {}
             )
         }
 
@@ -52,6 +55,7 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText("Import Rules").assertIsNotEnabled()
         composeTestRule.onNodeWithText("Open Permissions Setup").assertIsNotEnabled()
         composeTestRule.onNodeWithText("Open Rule Matcher").assertIsNotEnabled()
+        composeTestRule.onNodeWithText("Open Privacy Policy").assertIsNotEnabled()
     }
 
     @Test
@@ -64,7 +68,8 @@ class SettingsScreenTest {
                 onExportClick = {},
                 onImportClick = {},
                 onOpenPermissionsClick = {},
-                onOpenRuleTesterClick = {}
+                onOpenRuleTesterClick = {},
+                onOpenPrivacyPolicyClick = {}
             )
             ImportSummaryDialog(
                 summary = RuleImportStats(importedCount = 2, skippedCount = 1),

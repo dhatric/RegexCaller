@@ -343,7 +343,7 @@ On Samsung S23 with One UI 6.x, the `ROLE_CALL_SCREENING` system dialog:
 | Aspect | Behavior |
 | --- | --- |
 | Dialog appearance | Standard Android role request dialog |
-| Dialog text | "Allow RegexCaller to screen your calls?" |
+| Dialog text | "Allow RingBlock to screen your calls?" |
 | Buttons | "Allow" / "Deny" |
 | After "Allow" | Role granted, dialog dismisses |
 | After "Deny" | Dialog dismisses, no role change |

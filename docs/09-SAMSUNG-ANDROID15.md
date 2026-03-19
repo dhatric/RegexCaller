@@ -56,10 +56,10 @@ fun requestBatteryOptimizationExemption(activity: Activity) {
 
 ### Implementation Steps
 
-1.  **Check battery optimization status** in OnboardingScreen after role is granted
-2.  **If optimized (not exempt):** Show a second card explaining why battery exemption is needed
-3.  **Button:** "Exclude from Battery Optimization" → opens system settings
-4.  **After returning:** Re-check status and update UI
+1.  Keep battery optimization helpers as optional Samsung troubleshooting utilities
+2.  Do **not** require an in-app exemption prompt for the core onboarding flow
+3.  Prefer user guidance toward Samsung's "Never sleeping apps" / background usage settings if reliability issues are reported
+4.  Treat these steps as manual recovery guidance, not as a mandatory setup requirement
 
 ### RED/GREEN TDD
 
@@ -299,20 +299,20 @@ Tester: _______________
 Date: _______________
 
 PRE-SETUP:
-[ ] Fresh install of RegexCaller
+[ ] Fresh install of RingBlock
 [ ] Samsung Phone is the default dialer
 [ ] Samsung Smart Call is enabled (if applicable)
 
 ONBOARDING:
 [ ] App opens to Onboarding screen on first launch
 [ ] "Grant Permission" button shows system dialog
-[ ] System dialog says "Allow RegexCaller to screen your calls?"
+[ ] System dialog says "Allow RingBlock to screen your calls?"
 [ ] After "Allow", screen shows green success card
 [ ] Samsung Phone is STILL the default dialer (check in Settings)
 
 BATTERY:
-[ ] App is excluded from battery optimization
-[ ] App is in Samsung "Never sleeping apps" list
+[ ] App is not listed under Samsung "Sleeping apps" or "Deep sleeping apps"
+[ ] Optional: app is added to Samsung "Never sleeping apps" list
 
 RULE CREATION:
 [ ] Add wildcard rule: "98765*" → BLOCK

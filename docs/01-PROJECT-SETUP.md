@@ -302,13 +302,15 @@ Open `app/src/main/AndroidManifest.xml` (wizard-generated) and add `android:name
 ```xml
 <application
     android:name=".CallBlockerApp"
-    android:allowBackup="true"
+    android:allowBackup="false"
+    android:dataExtractionRules="@xml/data_extraction_rules"
+    android:fullBackupContent="@xml/backup_rules"
     android:icon="@mipmap/ic_launcher"
     ...
 >
 ```
 
-> Without this, Android will use the default `Application` class and `CallBlockerApp.onCreate()` will never run. This must be done NOW — Phase 2 relies on it for database initialization.
+> Without this, Android will use the default `Application` class and `CallBlockerApp.onCreate()` will never run. This must be done NOW — Phase 2 relies on it for database initialization. The backup attributes are part of the current privacy posture and should be included from the start.
 
 **Verification:** App compiles and launches (no crash on startup).
 
@@ -352,7 +354,7 @@ object BlockAction {
 
 ```xml
 <resources>
-    <string name="app_name">RegexCaller</string>
+    <string name="app_name">RingBlock</string>
     <string name="no_rules_title">No rules yet</string>
     <string name="no_rules_subtitle">Tap + to add a pattern like 98765* to block all matching numbers</string>
     <string name="add_rule">Add Rule</string>
@@ -364,6 +366,8 @@ object BlockAction {
     <string name="screening_active">Call screening is active. Your phone app is unchanged.</string>
     <string name="screening_not_granted">Call screening permission not granted yet.</string>
     <string name="samsung_note">This app works as a silent background filter. Your Samsung Phone app will NOT be replaced.</string>
+    <string name="privacy_policy_url">https://dhatric.github.io/RegexCaller/privacy-policy/</string>
+    <string name="open_privacy_policy">Open Privacy Policy</string>
 </resources>
 ```
 
@@ -394,7 +398,7 @@ object BlockAction {
 
 > **Important:** This app intentionally does **not** include the `android.permission.INTERNET` permission. All data stays on-device. Do **not** add internet permission or any analytics/crash-reporting SDK that requires it (e.g., Firebase Crashlytics). If crash reporting is needed in the future, use an offline-first solution.
 
-**Verification:** Release build (`./gradlew assembleRelease`) succeeds (signing config can use debug key for now).
+**Verification:** Release build (`./gradlew assembleRelease`) succeeds and the Play bundle (`./gradlew bundleRelease`) can be generated when signing is configured.
 
 ---
 
