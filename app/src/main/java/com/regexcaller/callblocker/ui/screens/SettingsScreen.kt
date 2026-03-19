@@ -141,8 +141,8 @@ fun SettingsScreenContent(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             SettingsSectionCard(
                 title = "Permissions & Setup",
@@ -216,7 +216,8 @@ private fun SettingsSectionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -232,7 +233,6 @@ private fun SettingsSectionCard(
                     details = details
                 )
             }
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(16.dp))
             content()
         }
     }

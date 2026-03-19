@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
@@ -83,9 +85,10 @@ fun OnboardingScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Status card
             Card(
@@ -116,6 +119,7 @@ fun OnboardingScreen(navController: NavController) {
                             "Call screening is active."
                         else
                             "Call screening permission not granted yet.",
+                        style = MaterialTheme.typography.titleSmall,
                         color = if (roleGranted) {
                             MaterialTheme.colorScheme.onPrimaryContainer
                         } else {
@@ -129,13 +133,15 @@ fun OnboardingScreen(navController: NavController) {
                 Text(
                     "RingBlock works as a silent background filter. " +
                     "Your Phone app will NOT be replaced.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Text(
                     "Tap the button below. Android will show a one-time " +
                     "confirmation dialog.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Button(
@@ -178,7 +184,7 @@ fun OnboardingScreen(navController: NavController) {
             } else {
                 Text(
                     "Everything is set up! Your call screening is active.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.titleSmall
                 )
 
                 if (!contactsGranted) {

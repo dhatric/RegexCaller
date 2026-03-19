@@ -236,8 +236,8 @@ fun AddRuleScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             SectionCard(
                 title = "Rule",
@@ -276,7 +276,7 @@ fun AddRuleScreen(
                     selectedAction = action,
                     onActionSelected = { action = it }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },
@@ -289,7 +289,7 @@ fun AddRuleScreen(
                         Text("Blank uses the pattern.")
                     }
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = pattern,
                     onValueChange = { pattern = it },
@@ -319,7 +319,7 @@ fun AddRuleScreen(
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 ExampleChips(
                     isRegex = isRegex,
                     onExampleSelected = { pattern = it }
@@ -340,8 +340,6 @@ fun AddRuleScreen(
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -359,8 +357,8 @@ internal fun SectionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = title,
@@ -423,7 +421,7 @@ internal fun ActionSection(
     }
     Text(
         text = actionUiModels.first { it.action == selectedAction }.description,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
@@ -448,11 +446,11 @@ internal fun PreviewSection(
         else -> {
             Text(
                 text = previewText ?: "",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = actionDescription,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

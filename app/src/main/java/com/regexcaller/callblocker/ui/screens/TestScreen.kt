@@ -50,8 +50,8 @@ fun TestScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = 16.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,7 +61,7 @@ fun TestScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
                         text = "Try a number",
@@ -70,7 +70,7 @@ fun TestScreen(
                     )
                     Text(
                         "Verify if a specific phone number gets blocked by one of your rules.",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     OutlinedTextField(
@@ -86,7 +86,7 @@ fun TestScreen(
                         val normalized = NumberNormalizer.normalize(rawNumber)
                         Text(
                             text = "Normalized Form: $normalized",
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -107,11 +107,12 @@ fun TestScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 "Call Allowed",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
                                 "No rules match this number.",
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -135,7 +136,7 @@ fun TestScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 "Action: ${matchResult.action}",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = titleColor
                             )
@@ -143,6 +144,7 @@ fun TestScreen(
                             Text("Matched Rule: ${matchResult.label}")
                             Text(
                                 "Pattern: ${matchResult.pattern}",
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
