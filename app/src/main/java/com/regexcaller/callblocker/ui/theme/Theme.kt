@@ -1,29 +1,54 @@
 package com.regexcaller.callblocker.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+
+private val RingBlockColorScheme = darkColorScheme(
+    primary = RingBlockOrange,
+    onPrimary = RingBlockBackground,
+    primaryContainer = RingBlockAccentContainer,
+    onPrimaryContainer = RingBlockOrangeGlow,
+    inversePrimary = RingBlockOrangeGlow,
+    secondary = RingBlockGray,
+    onSecondary = RingBlockBackground,
+    secondaryContainer = RingBlockSurfaceHigh,
+    onSecondaryContainer = RingBlockWhite,
+    tertiary = RingBlockOrangeGlow,
+    onTertiary = RingBlockBackground,
+    tertiaryContainer = RingBlockSurfaceHigh,
+    onTertiaryContainer = RingBlockWhite,
+    background = RingBlockBackground,
+    onBackground = RingBlockWhite,
+    surface = RingBlockBackground,
+    onSurface = RingBlockWhite,
+    surfaceVariant = RingBlockSurface,
+    onSurfaceVariant = RingBlockGray,
+    surfaceTint = RingBlockOrange,
+    inverseSurface = RingBlockWhite,
+    inverseOnSurface = RingBlockBackground,
+    error = RingBlockError,
+    onError = RingBlockBackground,
+    errorContainer = RingBlockErrorContainer,
+    onErrorContainer = RingBlockWhite,
+    outline = RingBlockOutline,
+    outlineVariant = RingBlockSurfaceHigh,
+    scrim = RingBlockBackground,
+    surfaceBright = RingBlockSurface,
+    surfaceDim = RingBlockBackground,
+    surfaceContainer = RingBlockSurface,
+    surfaceContainerHigh = RingBlockSurfaceHigh,
+    surfaceContainerHighest = RingBlockSurfaceHighest,
+    surfaceContainerLow = RingBlockSurfaceLow,
+    surfaceContainerLowest = RingBlockBackground
+)
 
 @Composable
 fun CallBlockerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        // Samsung S23 (Android 13+) supports dynamic color
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context)
-            else dynamicLightColorScheme(context)
-        }
-        darkTheme -> darkColorScheme()
-        else -> lightColorScheme()
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = RingBlockColorScheme,
         content = content
     )
 }

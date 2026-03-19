@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Card
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -52,6 +53,10 @@ import androidx.navigation.NavController
 import com.regexcaller.callblocker.R
 import com.regexcaller.callblocker.data.db.BlockRule
 import com.regexcaller.callblocker.data.model.BlockAction
+import com.regexcaller.callblocker.ui.theme.ringBlockAssistChipColors
+import com.regexcaller.callblocker.ui.theme.ringBlockPrimaryButtonColors
+import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
+import com.regexcaller.callblocker.ui.theme.ringBlockTopAppBarColors
 import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 
 private data class HomeActionUiModel(
@@ -98,7 +103,13 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
+                colors = ringBlockTopAppBarColors(),
+                title = {
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 actions = {
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
@@ -161,7 +172,10 @@ internal fun HomeSummaryCard(
     enabledRules: Int,
     totalBlockedCalls: Int
 ) {
-    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = ringBlockSectionCardColors()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,7 +203,10 @@ internal fun HomeSummaryCard(
 internal fun EmptyStateCard(
     onAddRule: () -> Unit
 ) {
-    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = ringBlockSectionCardColors()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -203,12 +220,25 @@ internal fun EmptyStateCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                AssistChip(onClick = {}, label = { Text("98765*") })
-                AssistChip(onClick = {}, label = { Text("*1234") })
-                AssistChip(onClick = {}, label = { Text("9876?00000") })
+                AssistChip(
+                    onClick = {},
+                    colors = ringBlockAssistChipColors(),
+                    label = { Text("98765*") }
+                )
+                AssistChip(
+                    onClick = {},
+                    colors = ringBlockAssistChipColors(),
+                    label = { Text("*1234") }
+                )
+                AssistChip(
+                    onClick = {},
+                    colors = ringBlockAssistChipColors(),
+                    label = { Text("9876?00000") }
+                )
             }
             Button(
                 onClick = onAddRule,
+                colors = ringBlockPrimaryButtonColors(),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Add Rule")
@@ -224,7 +254,8 @@ private fun SectionHeader(
     Text(
         text = title,
         style = MaterialTheme.typography.titleSmall,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.primary
     )
 }
 

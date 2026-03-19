@@ -22,13 +22,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -36,7 +36,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.runtime.Composable
@@ -55,6 +54,10 @@ import androidx.navigation.NavController
 import com.regexcaller.callblocker.data.db.BlockRule
 import com.regexcaller.callblocker.data.model.BlockAction
 import com.regexcaller.callblocker.engine.PatternMatcher
+import com.regexcaller.callblocker.ui.theme.ringBlockFilterChipColors
+import com.regexcaller.callblocker.ui.theme.ringBlockPrimaryButtonColors
+import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
+import com.regexcaller.callblocker.ui.theme.ringBlockTopAppBarColors
 import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 
 private enum class RuleMode {
@@ -163,7 +166,13 @@ fun AddRuleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditing) "Edit Rule" else "Add Rule") },
+                colors = ringBlockTopAppBarColors(),
+                title = {
+                    Text(
+                        text = if (isEditing) "Edit Rule" else "Add Rule",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -179,7 +188,11 @@ fun AddRuleScreen(
             )
         },
         bottomBar = {
-            Surface(tonalElevation = 4.dp, shadowElevation = 8.dp) {
+            Surface(
+                tonalElevation = 4.dp,
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surfaceContainerLow
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -209,7 +222,8 @@ fun AddRuleScreen(
                             navController.popBackStack()
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = pattern.isNotBlank() && patternError == null
+                        enabled = pattern.isNotBlank() && patternError == null,
+                        colors = ringBlockPrimaryButtonColors()
                     ) {
                         Text(if (isEditing) "Save Changes" else "Add Rule")
                     }
@@ -235,6 +249,14 @@ fun AddRuleScreen(
                             shape = SegmentedButtonDefaults.itemShape(
                                 index = index,
                                 count = RuleMode.entries.size
+                            ),
+                            colors = SegmentedButtonDefaults.colors(
+                                activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                activeBorderColor = MaterialTheme.colorScheme.primary,
+                                inactiveBorderColor = MaterialTheme.colorScheme.outline
                             ),
                             selected = mode == ruleMode,
                             onClick = { mode = ruleMode },
@@ -330,14 +352,21 @@ internal fun SectionCard(
     subtitle: String?,
     content: @Composable () -> Unit
 ) {
-    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = ringBlockSectionCardColors()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
             if (!subtitle.isNullOrBlank()) {
                 Text(
                     text = subtitle,
@@ -366,6 +395,7 @@ internal fun ExampleChips(
             FilterChip(
                 selected = false,
                 onClick = { onExampleSelected(example) },
+                colors = ringBlockFilterChipColors(),
                 label = { Text(example) }
             )
         }
@@ -386,6 +416,7 @@ internal fun ActionSection(
             FilterChip(
                 selected = selectedAction == actionModel.action,
                 onClick = { onActionSelected(actionModel.action) },
+                colors = ringBlockFilterChipColors(),
                 label = { Text(actionModel.label) }
             )
         }

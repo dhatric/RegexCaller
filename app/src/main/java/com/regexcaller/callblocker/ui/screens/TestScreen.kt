@@ -15,6 +15,8 @@ import androidx.navigation.NavController
 import com.regexcaller.callblocker.data.model.BlockAction
 import com.regexcaller.callblocker.engine.NumberNormalizer
 import com.regexcaller.callblocker.engine.PatternMatcher
+import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
+import com.regexcaller.callblocker.ui.theme.ringBlockTopAppBarColors
 import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +36,8 @@ fun TestScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Test Rule Matcher") },
+                colors = ringBlockTopAppBarColors(),
+                title = { Text("Test Rule Matcher", color = MaterialTheme.colorScheme.onSurface) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -50,51 +53,79 @@ fun TestScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                "Verify if a specific phone number gets blocked by one of your rules.",
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            // Number input
-            OutlinedTextField(
-                value = rawNumber,
-                onValueChange = { rawNumber = it },
-                label = { Text("Enter a phone number to test") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
+                colors = ringBlockSectionCardColors()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Try a number",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        "Verify if a specific phone number gets blocked by one of your rules.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    OutlinedTextField(
+                        value = rawNumber,
+                        onValueChange = { rawNumber = it },
+                        label = { Text("Enter a phone number to test") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
 
-            if (rawNumber.isNotBlank()) {
-                val normalized = NumberNormalizer.normalize(rawNumber)
-                Text(
-                    text = "Normalized Form: $normalized",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    if (rawNumber.isNotBlank()) {
+                        val normalized = NumberNormalizer.normalize(rawNumber)
+                        Text(
+                            text = "Normalized Form: $normalized",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Display results
             if (rawNumber.isNotBlank()) {
+                Text(
+                    text = "Result",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
                 if (matchResult == null) {
                     Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
+                        colors = ringBlockSectionCardColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Call Allowed", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("No rules match this number.")
+                            Text(
+                                "Call Allowed",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "No rules match this number.",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 } else {
                     val cardColor = when (matchResult.action) {
                         BlockAction.BLOCK -> MaterialTheme.colorScheme.errorContainer
-                        BlockAction.SILENCE -> MaterialTheme.colorScheme.secondaryContainer
-                        else -> MaterialTheme.colorScheme.tertiaryContainer
+                        BlockAction.SILENCE -> MaterialTheme.colorScheme.surfaceContainerHigh
+                        else -> MaterialTheme.colorScheme.primaryContainer
+                    }
+                    val titleColor = when (matchResult.action) {
+                        BlockAction.BLOCK -> MaterialTheme.colorScheme.error
+                        BlockAction.SILENCE -> MaterialTheme.colorScheme.primary
+                        else -> MaterialTheme.colorScheme.onPrimaryContainer
                     }
 
                     Card(
@@ -105,11 +136,15 @@ fun TestScreen(
                             Text(
                                 "Action: ${matchResult.action}",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = titleColor
                             )
                             Spacer(Modifier.height(8.dp))
                             Text("Matched Rule: ${matchResult.label}")
-                            Text("Pattern: ${matchResult.pattern}")
+                            Text(
+                                "Pattern: ${matchResult.pattern}",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }

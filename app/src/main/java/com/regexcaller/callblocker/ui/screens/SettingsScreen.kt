@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -48,6 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.regexcaller.callblocker.data.transfer.RuleImportStats
+import com.regexcaller.callblocker.ui.theme.ringBlockPrimaryButtonColors
+import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
+import com.regexcaller.callblocker.ui.theme.ringBlockTopAppBarColors
 import com.regexcaller.callblocker.ui.viewmodel.BlockRuleViewModel
 import java.time.LocalDate
 
@@ -122,7 +124,8 @@ fun SettingsScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                colors = ringBlockTopAppBarColors(),
+                title = { Text("Settings", color = MaterialTheme.colorScheme.onSurface) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -148,6 +151,7 @@ fun SettingsScreenContent(
                 Button(
                     onClick = onOpenPermissionsClick,
                     enabled = !isBusy,
+                    colors = ringBlockPrimaryButtonColors(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Open Permissions Setup")
@@ -160,6 +164,7 @@ fun SettingsScreenContent(
                 Button(
                     onClick = onExportClick,
                     enabled = !isBusy,
+                    colors = ringBlockPrimaryButtonColors(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Export Rules")
@@ -168,6 +173,7 @@ fun SettingsScreenContent(
                 Button(
                     onClick = onImportClick,
                     enabled = !isBusy,
+                    colors = ringBlockPrimaryButtonColors(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Import Rules")
@@ -181,6 +187,7 @@ fun SettingsScreenContent(
                 Button(
                     onClick = onOpenRuleTesterClick,
                     enabled = !isBusy,
+                    colors = ringBlockPrimaryButtonColors(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Open Rule Matcher")
@@ -204,9 +211,7 @@ private fun SettingsSectionCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+        colors = ringBlockSectionCardColors()
     ) {
         Column(
             modifier = Modifier
@@ -219,7 +224,8 @@ private fun SettingsSectionCard(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 SectionInfoMenu(
                     title = title,
@@ -243,7 +249,8 @@ private fun SectionInfoMenu(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.Default.Info,
-                contentDescription = "$title details"
+                contentDescription = "$title details",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         DropdownMenu(
