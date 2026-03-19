@@ -54,6 +54,20 @@ android {
     namespace = "com.regexcaller.callblocker"
     compileSdk = 35
 
+    val releaseStoreFile = project.findProperty("RELEASE_STORE_FILE") as String?
+        ?: System.getenv("RELEASE_STORE_FILE")
+    val releaseStorePassword = project.findProperty("RELEASE_STORE_PASSWORD") as String?
+        ?: System.getenv("RELEASE_STORE_PASSWORD")
+    val releaseKeyAlias = project.findProperty("RELEASE_KEY_ALIAS") as String?
+        ?: System.getenv("RELEASE_KEY_ALIAS")
+    val releaseKeyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as String?
+        ?: System.getenv("RELEASE_KEY_PASSWORD")
+    val hasReleaseSigning =
+        !releaseStoreFile.isNullOrBlank() &&
+            !releaseStorePassword.isNullOrBlank() &&
+            !releaseKeyAlias.isNullOrBlank() &&
+            !releaseKeyPassword.isNullOrBlank()
+
     defaultConfig {
         applicationId = "com.regexcaller.callblocker"
         minSdk = 29
@@ -65,20 +79,22 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            // Use environment variables or gradle.properties for secrets instead of hardcoding
-            val keystoreFile = project.findProperty("RELEASE_STORE_FILE") as String? ?: System.getenv("RELEASE_STORE_FILE")
-            storeFile = keystoreFile?.let { file(it) }
-            storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as String? ?: System.getenv("RELEASE_STORE_PASSWORD")
-            keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as String? ?: System.getenv("RELEASE_KEY_ALIAS")
-            keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as String? ?: System.getenv("RELEASE_KEY_PASSWORD")
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
