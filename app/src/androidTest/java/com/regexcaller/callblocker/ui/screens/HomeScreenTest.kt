@@ -29,13 +29,15 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeSummaryCard(
                 totalRules = 5,
-                enabledRules = 3
+                enabledRules = 3,
+                totalBlockedCalls = 12
             )
         }
 
-        composeTestRule.onNodeWithText("Protection overview").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Protection active").assertIsDisplayed()
         composeTestRule.onNodeWithText("5").assertIsDisplayed()
         composeTestRule.onNodeWithText("3").assertIsDisplayed()
+        composeTestRule.onNodeWithText("12").assertIsDisplayed()
     }
 
     @Test
@@ -55,9 +57,8 @@ class HomeScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Spam Prefix").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Pattern").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Name: Spam Prefix").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Pattern: 98765*").assertIsDisplayed()
         composeTestRule.onNodeWithText("Block").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Matches 4").assertIsDisplayed()
     }
 }

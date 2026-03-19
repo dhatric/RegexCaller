@@ -1,24 +1,22 @@
 package com.regexcaller.callblocker.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
@@ -27,7 +25,6 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -72,6 +69,7 @@ fun HomeScreen(
 ) {
     val rules by viewModel.allRules.collectAsState(initial = emptyList())
     val enabledCount = rules.count { it.isEnabled }
+    val totalBlockedCalls = rules.sumOf { it.matchCount }
     var pendingDeleteRule by remember { mutableStateOf<BlockRule?>(null) }
 
     if (pendingDeleteRule != null) {
@@ -120,23 +118,32 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+            contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                if (rules.isEmpty()) {
+                SectionHeader(title = "Dashboard")
+            }
+
+            item {
+                HomeSummaryCard(
+                    totalRules = rules.size,
+                    enabledRules = enabledCount,
+                    totalBlockedCalls = totalBlockedCalls
+                )
+            }
+
+            item {
+                SectionHeader(title = "Rules")
+            }
+
+            if (rules.isEmpty()) {
+                item {
                     EmptyStateCard(
                         onAddRule = { navController.navigate("add_rule") }
                     )
-                } else {
-                    HomeSummaryCard(
-                        totalRules = rules.size,
-                        enabledRules = enabledCount
-                    )
                 }
-            }
-
-            if (rules.isNotEmpty()) {
+            } else {
                 items(rules, key = { it.id }) { rule ->
                     RuleCard(
                         rule = rule,
@@ -153,7 +160,8 @@ fun HomeScreen(
 @Composable
 internal fun HomeSummaryCard(
     totalRules: Int,
-    enabledRules: Int
+    enabledRules: Int,
+    totalBlockedCalls: Int
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -162,19 +170,18 @@ internal fun HomeSummaryCard(
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Protection", style = MaterialTheme.typography.titleMedium)
             Text(
                 text = if (enabledRules > 0) {
-                    "Protection is active"
+                    "Protection active"
                 } else {
-                    "All rules are currently turned off"
+                    "No active rules"
                 },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.titleMedium
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SummaryStat(label = "Rules", value = totalRules.toString())
                 SummaryStat(label = "Enabled", value = enabledRules.toString())
+                SummaryStat(label = "Blocked", value = totalBlockedCalls.toString())
             }
         }
     }
@@ -210,6 +217,17 @@ internal fun EmptyStateCard(
             }
         }
     }
+}
+
+@Composable
+private fun SectionHeader(
+    title: String
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.SemiBold
+    )
 }
 
 @Composable
@@ -249,7 +267,7 @@ internal fun RuleCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Row(
@@ -264,40 +282,39 @@ internal fun RuleCard(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(
+                            if (rule.isEnabled) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHigh
+                            }
+                        )
+                        .clickable { onToggle(!rule.isEnabled) }
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
-                    IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Rule",
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Rule",
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    IconButton(
-                        onClick = { onToggle(!rule.isEnabled) },
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (rule.isEnabled) Icons.Default.CheckCircle else Icons.Default.Close,
-                            contentDescription = if (rule.isEnabled) "Disable Rule" else "Enable Rule",
-                            tint = if (rule.isEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
+                    Text(
+                        text = if (rule.isEnabled) "On" else "Off",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (rule.isEnabled) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
                 }
             }
 
             Text(
-                text = "Pattern: ${rule.pattern}",
+                text = buildString {
+                    append("Pattern: ")
+                    append(rule.pattern)
+                    if (rule.isRegex) {
+                        append(" (Regex)")
+                    }
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -309,34 +326,24 @@ internal fun RuleCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                ModeBadge(isRegex = rule.isRegex)
                 ActionBadge(action = rule.action)
-                Text(
-                    text = "Matches ${rule.matchCount}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Rule",
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Rule",
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
-    }
-}
-
-@Composable
-private fun ModeBadge(
-    isRegex: Boolean
-) {
-    val label = if (isRegex) "Regex" else "Pattern"
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(999.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
