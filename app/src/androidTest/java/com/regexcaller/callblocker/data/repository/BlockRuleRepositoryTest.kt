@@ -68,4 +68,41 @@ class BlockRuleRepositoryTest {
         val updated = repository.allRules.first().first()
         assertEquals("New", updated.label)
     }
+
+    @Test
+    fun importRules_skipsExactDuplicatesAndAddsNewRules() = runTest {
+        repository.insert(
+            BlockRule(
+                label = "Spam",
+                pattern = "111*",
+                isRegex = false,
+                action = "BLOCK",
+                isEnabled = true
+            )
+        )
+
+        val importStats = repository.importRules(
+            listOf(
+                BlockRule(
+                    label = "Spam",
+                    pattern = "111*",
+                    isRegex = false,
+                    action = "BLOCK",
+                    isEnabled = true
+                ),
+                BlockRule(
+                    label = "Family",
+                    pattern = "222",
+                    isRegex = false,
+                    action = "ALLOW",
+                    isEnabled = true
+                )
+            )
+        )
+
+        val rules = repository.allRules.first()
+        assertEquals(2, rules.size)
+        assertEquals(1, importStats.importedCount)
+        assertEquals(1, importStats.skippedCount)
+    }
 }

@@ -40,6 +40,9 @@ class MainActivity : ComponentActivity() {
                     composable("test") {
                         TestScreen(navController)
                     }
+                    composable("settings") {
+                        SettingsScreen(navController)
+                    }
                     composable("onboarding") {
                         OnboardingScreen(navController)
                     }

@@ -11,11 +11,17 @@ interface BlockRuleDao {
     @Query("SELECT * FROM block_rules WHERE isEnabled = 1")
     suspend fun getEnabledRules(): List<BlockRule>
 
+    @Query("SELECT * FROM block_rules ORDER BY createdAt DESC")
+    suspend fun getAllRulesSnapshot(): List<BlockRule>
+
     @Query("SELECT * FROM block_rules WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): BlockRule?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(rule: BlockRule): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(rules: List<BlockRule>)
 
     @Update
     suspend fun update(rule: BlockRule)

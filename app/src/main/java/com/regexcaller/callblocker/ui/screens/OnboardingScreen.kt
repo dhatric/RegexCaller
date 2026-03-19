@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,7 @@ import com.regexcaller.callblocker.util.hasCallScreeningRole
 fun OnboardingScreen(navController: NavController) {
     val context = LocalContext.current
     val activity = context as? Activity
+    val canNavigateBack = navController.previousBackStackEntry != null
 
     var roleGranted by remember {
         mutableStateOf(
@@ -58,7 +60,21 @@ fun OnboardingScreen(navController: NavController) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Enable Call Blocking") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Enable Call Blocking") },
+                navigationIcon = {
+                    if (canNavigateBack) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -89,7 +105,7 @@ fun OnboardingScreen(navController: NavController) {
                     )
                     Text(
                         if (roleGranted)
-                            "Call screening is active. Samsung Phone is unchanged."
+                            "Call screening is active."
                         else
                             "Call screening permission not granted yet."
                     )
@@ -98,8 +114,8 @@ fun OnboardingScreen(navController: NavController) {
 
             if (!roleGranted) {
                 Text(
-                    "RegexCaller works as a silent background filter. " +
-                    "Your Samsung Phone app will NOT be replaced.",
+                    "RingBlock works as a silent background filter. " +
+                    "Your Phone app will NOT be replaced.",
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -139,10 +155,10 @@ fun OnboardingScreen(navController: NavController) {
                             style = MaterialTheme.typography.titleSmall
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text("• Samsung Phone stays as your default dialer")
-                        Text("• RegexCaller silently checks each call")
+                        Text("• Current Phone stays as your default dialer")
+                        Text("• RingBlock silently checks each call")
                         Text("• Matched calls are blocked before they ring")
-                        Text("• Unmatched calls ring normally through Samsung Phone")
+                        Text("• Unmatched calls ring normally through Phone")
                         Text("• You can revoke this anytime in Android Settings")
                     }
                 }

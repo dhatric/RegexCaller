@@ -61,6 +61,43 @@ class BlockRuleViewModelTest {
         val updated = repository.allRules.first().first()
         assertEquals("New", updated.label)
     }
+
+    @Test
+    fun `importRules skips exact duplicates and inserts only new rules`() = runTest {
+        repository.insert(
+            BlockRule(
+                label = "Spam",
+                pattern = "111*",
+                isRegex = false,
+                action = "BLOCK",
+                isEnabled = true
+            )
+        )
+
+        val importStats = repository.importRules(
+            listOf(
+                BlockRule(
+                    label = "Spam",
+                    pattern = "111*",
+                    isRegex = false,
+                    action = "BLOCK",
+                    isEnabled = true
+                ),
+                BlockRule(
+                    label = "Allowlist",
+                    pattern = "999",
+                    isRegex = false,
+                    action = "ALLOW",
+                    isEnabled = true
+                )
+            )
+        )
+
+        val rules = repository.allRules.first()
+        assertEquals(2, rules.size)
+        assertEquals(1, importStats.importedCount)
+        assertEquals(1, importStats.skippedCount)
+    }
 }
 
 /**
@@ -76,11 +113,22 @@ class FakeBlockRuleDao : BlockRuleDao {
     override suspend fun getEnabledRules(): List<BlockRule> =
         rules.filter { it.isEnabled }
 
+    override suspend fun getAllRulesSnapshot(): List<BlockRule> =
+        rules.toList().sortedByDescending { it.createdAt }
+
     override suspend fun insert(rule: BlockRule): Long {
         val newRule = rule.copy(id = nextId++)
         rules.add(newRule)
         flow.value = rules.toList().sortedByDescending { it.createdAt }
         return newRule.id
+    }
+
+    override suspend fun insertAll(rules: List<BlockRule>) {
+        rules.forEach { rule ->
+            val newRule = rule.copy(id = nextId++)
+            this.rules.add(newRule)
+        }
+        flow.value = this.rules.toList().sortedByDescending { it.createdAt }
     }
 
     override suspend fun getById(id: Long): BlockRule? = rules.firstOrNull { it.id == id }
