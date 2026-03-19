@@ -1,27 +1,28 @@
-# RegexCaller - Pattern-Based Call Blocker
+# RingBlock - Pattern Call Blocker
 
-**RegexCaller** is a robust, lightweight Android call screening application tailored to quickly drop telemarketing and VoIP spam calls based on user-defined Wildcard prefixes, exact numbers, or complex explicit Regex matching. 
+**RingBlock** is a lightweight Android call screening app that blocks spam and unwanted calls using custom number patterns, exact matches, or explicit regex rules.
 
-Unlike traditional "Dialer Replacement" apps, RegexCaller takes advantage of Android's modern `ROLE_CALL_SCREENING` permission. It runs entirely silently in the background filtering incoming calls without displacing your system's default dialer application. 
+Unlike dialer replacement apps, RingBlock uses Android's `ROLE_CALL_SCREENING` permission. It runs silently in the background and filters incoming calls without replacing your default phone app.
 
-This project was built from scratch utilizing strict **Test-Driven Development (TDD)** and hardened to support deep-sleeping functionality on One UI (Samsung Galaxy S23) devices running Android 15.
+This project is built with Kotlin, Jetpack Compose, and a test-first workflow, with special care for Samsung / One UI behavior on modern Android versions.
 
 ## Key Features
 
-- **Wildcard Blocking:** Instantly block entire area codes or sequential spammers.
+- **Pattern-Based Blocking:** Instantly block entire area codes, repeating spam ranges, or number shapes.
   - Prefix (`98765*` -> matches numbers starting with 98765)
   - Suffix (`*1234` -> matches numbers ending with 1234)
-  - Length Substitutes (`9876?00000` -> matched exactly one character)
-- **Regex Blocking:** Formulate explicit expressions (e.g. `^\+91.*00$`) for granular filtering.
-- **Rule Priorities:** Apply `BLOCK`, `SILENCE`, or `ALLOW` actions. Allow rules are strictly evaluated first allowing you to easily whitelist priority numbers against broad blocking sweeps.
-- **Safe Evaluation:** Built-in Test tool lets you pass raw numbers through your database to determine what Rule catches it.
-- **Privacy First Approach:** Requires zero location, analytics, or Internet permissions. Local Room Database. System cloud backups are strictly disabled so your rules never leave the device. 
+  - Single-character wildcard (`9876?00000` -> matches exactly one digit in place of `?`)
+- **Regex Rules:** Use explicit regex patterns (for example `^\+91.*00$`) for more advanced filtering.
+- **Rule Actions:** Apply `BLOCK`, `SILENCE`, or `ALLOW`. Allow rules are evaluated first so you can safely whitelist important numbers.
+- **Rule Import / Export:** Back up your rules to JSON and restore them later from the Settings screen.
+- **Built-in Rule Matcher:** Test a number against your saved rules from Settings to see which rule would apply.
+- **Privacy First:** No analytics, no Internet permission, and local-only rule storage through Room. Android cloud backup is disabled so rules stay on-device.
 
 ## Technical Architecture
 - **Language:** Kotlin
 - **UI Toolkit:** Jetpack Compose (Material 3 Dynamic Theming)
 - **Data Layer:** Room (SQLite via Kotlin Symbol Processing)
-- **Testing Layers:** 60+ JVM Unit Tests (`Junit4`) + Android Instrumented DAOs. 
+- **Testing Layers:** JVM unit tests plus Android instrumented database and UI tests.
 
 ## Requirements
 To verify and compile this project locally:
@@ -36,21 +37,25 @@ To verify and compile this project locally:
 ## 🚀 Getting Started
 
 ### 1. Automated Testing Setup
-Because RegexCaller leverages a strict TDD foundation, you can confirm all 60 of the project's logic behaviors without needing a physical device. Run all isolated JVM testing routines via terminal:
+You can verify the core logic without needing a physical device:
 
 ```bash
-# Evaluate NumberNormalizer, Pattern Matcher, and ViewModel logic 
+# Evaluate matcher, repository, transfer, and ViewModel logic
 ./gradlew testDebugUnitTest
 ```
 
-To run the full suite of Instrumented Android tests (evaluating SQLite SQL migrations on actual hardware instances), attach a physical device or emulator and run:
+To compile or run Android instrumented tests, attach a device or emulator:
 ```bash
+# Compile Android test sources
+./gradlew compileDebugAndroidTestKotlin
+
+# Run instrumented tests on a connected device/emulator
 ./gradlew connectedAndroidTest
 ```
 
 ### 2. Building for Production
 
-Compile a signed, Proguard-minified release APK to test natively on your Android Device. 
+Compile a signed, Proguard-minified release APK:
 
 **Note:** You must provide your own signing keystore via environment variables or `gradle.properties`:
 - `RELEASE_STORE_FILE`
@@ -59,13 +64,13 @@ Compile a signed, Proguard-minified release APK to test natively on your Android
 - `RELEASE_KEY_PASSWORD`
 
 ```bash
-# Generate the Minified Release Build
+# Generate the minified release build
 ./gradlew assembleRelease
 ```
 
 ### 3. Installing via ADB
 
-To push your compiled `.apk` to your phone directly from your terminal, assure your phone is plugged in with "USB Debugging" enabled under Developer Settings:
+To push the compiled APK to your phone, enable USB debugging and connect the device:
 
 ```bash
 # Push the release build to your connected device
@@ -77,11 +82,12 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
 ### 4. Running the App & Onboarding
-1. Open RegexCaller from your App Drawer.
-2. The `OnboardingScreen` will prompt you to apply "Call Screening" permissions. **If the Android System Dialog misleadingly asks to "Set RegexCaller as your default caller ID app" — click Allow.** It will not replace your stock phone dialer.
-3. Click the `+` Floating Action Button to generate an `ALLOW` or `BLOCK` rule.
-4. Have a friend or secondary device trigger an incoming call to observe the filtering. 
+1. Open RingBlock from your app drawer.
+2. The onboarding flow will prompt you to grant Call Screening permission. If Android phrases this as setting RingBlock as the default caller ID or screening app, allow it. It does not replace your normal phone dialer.
+3. Add your rules from the Home screen with the `+` action.
+4. Use Settings to test rule matching or import/export your rule set.
+5. Trigger a real call from another device to confirm filtering behavior.
 
 ---
 
-*This application was developed via AI-assisted TDD processes tailored to resolve quirks historically seen on aggressively background-restricted Android distributions.*
+*This application was developed with AI-assisted implementation and a test-first workflow, with extra attention paid to behavior on aggressively background-restricted Android builds.*
