@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="ringblock_background">#FF0F0F0F</color>
+    <color name="ringblock_surface">#FF1A1A1A</color>
+    <color name="ringblock_text_primary">#FFFFFFFF</color>
+    <color name="ringblock_text_secondary">#FFB3B3B3</color>
+    <color name="ringblock_accent">#FFFF6600</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

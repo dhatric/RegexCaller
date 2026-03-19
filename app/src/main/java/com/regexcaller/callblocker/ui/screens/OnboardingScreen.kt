@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
@@ -19,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import androidx.navigation.NavController
+import com.regexcaller.callblocker.ui.theme.ringBlockPrimaryButtonColors
+import com.regexcaller.callblocker.ui.theme.ringBlockSectionCardColors
+import com.regexcaller.callblocker.ui.theme.ringBlockTopAppBarColors
 import com.regexcaller.callblocker.util.hasCallScreeningRole
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +67,8 @@ fun OnboardingScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Enable Call Blocking") },
+                colors = ringBlockTopAppBarColors(),
+                title = { Text("Enable Call Blocking", color = MaterialTheme.colorScheme.onSurface) },
                 navigationIcon = {
                     if (canNavigateBack) {
                         IconButton(onClick = { navController.popBackStack() }) {
@@ -79,9 +85,10 @@ fun OnboardingScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Status card
             Card(
@@ -99,15 +106,25 @@ fun OnboardingScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Icon(
-                        if (roleGranted) Icons.Default.Warning // Using warning as a placeholder for check circle to avoid extra imports if checkcircle doesn't exist
-                        else Icons.Default.Warning,
-                        contentDescription = null
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null,
+                        tint = if (roleGranted) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        }
                     )
                     Text(
                         if (roleGranted)
                             "Call screening is active."
                         else
-                            "Call screening permission not granted yet."
+                            "Call screening permission not granted yet.",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = if (roleGranted) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        }
                     )
                 }
             }
@@ -116,13 +133,15 @@ fun OnboardingScreen(navController: NavController) {
                 Text(
                     "RingBlock works as a silent background filter. " +
                     "Your Phone app will NOT be replaced.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Text(
                     "Tap the button below. Android will show a one-time " +
                     "confirmation dialog.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Button(
@@ -137,57 +156,60 @@ fun OnboardingScreen(navController: NavController) {
                             roleLauncher.launch(intent)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ringBlockPrimaryButtonColors()
                 ) {
                     Text("Grant Call Screening Permission")
                 }
 
                 // Samsung-specific reassurance
                 Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                    ),
+                    colors = ringBlockSectionCardColors(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
                             "What happens when you grant this permission:",
-                            style = MaterialTheme.typography.titleSmall
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text("• Current Phone stays as your default dialer")
-                        Text("• RingBlock silently checks each call")
-                        Text("• Matched calls are blocked before they ring")
-                        Text("• Unmatched calls ring normally through Phone")
-                        Text("• You can revoke this anytime in Android Settings")
+                        Text("• Current Phone stays as your default dialer", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("• RingBlock silently checks each call", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("• Matched calls are blocked before they ring", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("• Unmatched calls ring normally through Phone", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("• You can revoke this anytime in Android Settings", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             } else {
                 Text(
                     "Everything is set up! Your call screening is active.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.titleSmall
                 )
 
                 if (!contactsGranted) {
                     Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                        ),
+                        colors = ringBlockSectionCardColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text(
                                 "Optional but recommended: Allow Contacts permission",
-                                style = MaterialTheme.typography.titleSmall
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(Modifier.height(8.dp))
-                            Text("Without this, Android may skip screening for calls from saved contacts.")
+                            Text(
+                                "Without this, Android may skip screening for calls from saved contacts.",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                             Spacer(Modifier.height(8.dp))
                             Button(
                                 onClick = {
                                     contactsPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ringBlockPrimaryButtonColors()
                             ) {
                                 Text("Grant Contacts Permission")
                             }
@@ -199,7 +221,8 @@ fun OnboardingScreen(navController: NavController) {
                     onClick = { navController.navigate("home") {
                         popUpTo("onboarding") { inclusive = true }
                     }},
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ringBlockPrimaryButtonColors()
                 ) {
                     Text("Start Adding Rules")
                 }
